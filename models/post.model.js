@@ -14,6 +14,8 @@ const PostSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
+    active: { type: Boolean, default: true },
+
     geoLocation: {
         type: {
             type: String,
@@ -32,8 +34,9 @@ const PostSchema = new mongoose.Schema({
     }
 );
 
+// Create the index after defining the model
 PostSchema.index({ geoLocation: '2dsphere' });
-
 const Post = mongoose.model("Post", PostSchema);
+
 
 export default Post;

@@ -21,10 +21,12 @@ passportstrt()
 // routes import
 import userRouter from './routes/user.route.js'
 import postRouter from './routes/post.route.js'
+import countActive from './routes/user.count.js'
 
 
 // routes declaration
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/post", postRouter)
+app.use("/api/v1/test", countActive)
 
 export { app }

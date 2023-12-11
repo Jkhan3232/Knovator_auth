@@ -1,8 +1,6 @@
 // Importing necessary modules
 import jwt from 'jsonwebtoken';
-import { asyncHandler } from "../utils/AsyncHandler.js";  // Corrected typo in import
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 
 // Middleware to check if the user is authenticated
