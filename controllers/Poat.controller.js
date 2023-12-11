@@ -1,17 +1,10 @@
 // Import necessary modules and dependencies
 import Post from '../models/post.model.js';
 import { asyncHandler } from '../utils/AsyncHendaler.js';
-import NodeGeocoder from 'node-geocoder';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
-// Configuration options for geocoding
-const options = {
-    provider: 'openstreetmap'
-};
 
-// Initialize the geocoder with specified options
-const geocoder = NodeGeocoder(options);
 
 // Middleware for creating a new post
 const createPost = asyncHandler(async (req, res) => {
@@ -19,16 +12,10 @@ const createPost = asyncHandler(async (req, res) => {
         // Extract required information from the request body
         const { title, body, address } = req.body;
 
-        // Use geocoder to get longitude and latitude from the provided address
-        const geoData = await geocoder.geocode(address);
+        // Generate random latitude and longitude values
+        const latitude = Math.random() * 180 - 90;
+        const longitude = Math.random() * 360 - 180;
 
-        // Check if geocoding was successful and returned valid data
-        if (!geoData || geoData.length === 0) {
-            throw new ApiError('Invalid address', 400);
-        }
-
-        // Extract coordinates from the geocoding result
-        const { longitude, latitude } = geoData[0];
         const createdBy = req.user._id;
 
         // Create a new post instance
@@ -53,7 +40,6 @@ const createPost = asyncHandler(async (req, res) => {
         return res.status(err.statusCode || 500).json(new ApiError(err.message, err.statusCode || 500));
     }
 });
-
 // Middleware for retrieving posts for a specific user
 const getPosts = asyncHandler(async (req, res) => {
     try {

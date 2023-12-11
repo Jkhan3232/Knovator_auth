@@ -34,7 +34,6 @@ const PostSchema = new mongoose.Schema({
     }
 );
 
-// Create the index after defining the model
 PostSchema.index({ geoLocation: '2dsphere' });
 const Post = mongoose.model("Post", PostSchema);
 

@@ -11,29 +11,48 @@ import isAuthenticated from "../middleware/auth.js"
 router.get('/geo', isAuthenticated, async (req, res) => {
     try {
         const { latitude, longitude } = req.query;
-        const posts = await Post.find({
-            location: {
+
+        // Log the indexes
+        Post.collection.getIndexes({ full: true })
+            .then(indexes => {
+                // console.log("indexes:", indexes);
+            })
+            .catch(console.error);
+
+        // Recreate the index
+        await Post.collection.dropIndex('geoLocation_2dsphere');
+        await Post.collection.createIndex({ geoLocation: '2dsphere' });
+
+        // Check the data
+        const Posts = await Post.findOne({});
+        // console.log('geoLocation:', samplePost.geoLocation);
+
+        // Query with $geoNear
+        const post = await Post.find({
+            geoLocation: {
                 $near: {
                     $geometry: {
-                        type: 'Point',
-                        coordinates: [parseFloat(longitude), parseFloat(latitude)],
+                        type: "Point",
+                        coordinates: [longitude, latitude]
                     },
-                    $maxDistance: 10000, // in meters (adjust as needed)
-                },
-            },
-        });
-        res.json({ posts });
+                    $maxDistance: 10000
+                }
+            }
+        })
+        res.json({ Posts, post });
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         res.status(500).json({ error: 'Error fetching posts' });
     }
 });
+
+
 
 // Task 5: Show the count of active and inactive posts in the dashboard
 router.get('/post-count', isAuthenticated, async (req, res) => {
     try {
         const userId = req.user.id;
-        console.log(userId, "sdlkas");
+        // console.log(userId, "sdlkas");
         const activePostCount = await Post.countDocuments({ createdBy: userId, active: true });
         const inactivePostCount = await Post.countDocuments({ createdBy: userId, active: false });
 
