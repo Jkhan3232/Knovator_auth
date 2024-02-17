@@ -1,20 +1,20 @@
-FROM node:20 as builder
+# Use the official Node.js 14 image
+FROM node:20
 
-COPY .env .
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
-WORKDIR /src
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-COPY package*.json .
-
+# Install dependencies
 RUN npm install
 
-COPY src/ src/
+# Copy the rest of the application code
+COPY . .
 
-FROM node:20 as runner
+# Expose the port the app runs on
+EXPOSE 3000
 
-WORKDIR /app
-
-COPY --from=builder src/package*.json .
-COPY --from=builder src/node_modules node_modules
-
+# Command to run the application
 CMD ["npm", "start"]
