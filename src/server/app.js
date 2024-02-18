@@ -33,4 +33,8 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/test", countActive);
 
+app.get("/", (req, res) => {
+  res.send("Hello World! This is a test!");
+});
+
 export { app };
